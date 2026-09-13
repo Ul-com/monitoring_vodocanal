@@ -1,0 +1,13 @@
+{
+  "name": "vodokanal-iot-pilot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Пилот системы мониторинга рисков IoT-инфраструктуры",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build && npm --prefix backend install && npm --prefix backend run build",
+    "start": "node backend/dist/server.js"
+  }
+}

@@ -1,0 +1,472 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --brand: #003366;
+  --brand-600: #0A4C8A;
+  --brand-100: #E6F0FA;
+
+  --bg: #F1F4F8;
+  --surface: #FFFFFF;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+
+  --text: #0F172A;
+  --text-muted: #64748B;
+
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --danger: #DC2626;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.14);
+
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Каркас приложения ─────────────────────────────────────── */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px;
+  background: linear-gradient(90deg, #002A52 0%, var(--brand) 55%, var(--brand-600) 100%);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  min-width: 0;
+}
+
+.app-brand__mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 18px;
+  flex: none;
+}
+
+.app-brand__title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.app-brand__subtitle {
+  font-size: 12px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+}
+
+.app-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+}
+
+.app-user__name {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.app-user__role {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.2;
+}
+
+.app-sider {
+  border-right: 1px solid var(--border);
+  background: var(--surface) !important;
+}
+
+.page {
+  padding: 24px;
+}
+
+.page__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.page__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.page__subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ── KPI-плитки ────────────────────────────────────────────── */
+
+.kpi {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+  height: 100%;
+}
+
+.kpi:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.kpi__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 20px;
+  flex: none;
+  background: var(--brand-100);
+  color: var(--brand);
+}
+
+.kpi--success .kpi__icon { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+.kpi--warning .kpi__icon { background: rgba(245, 158, 11, 0.14); color: var(--warning); }
+.kpi--danger  .kpi__icon { background: rgba(220, 38, 38, 0.12);  color: var(--danger); }
+
+.kpi__label {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.kpi__value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Карта ─────────────────────────────────────────────────── */
+
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.map-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.map-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 14px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  font-size: 12px;
+  color: var(--text);
+  backdrop-filter: blur(6px);
+}
+
+.map-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.map-legend__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Значок объекта: круглая эмблема водоснабжения, рисунок внутри — тип объекта.
+   position не задаём — MapLibre сам ставит маркеру absolute, и переопределение
+   выбивает маркер из привязки к координатам. */
+.map-pin {
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+}
+
+.map-pin__body {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(155deg, #5AA9E6 0%, #1E6FB8 48%, #0B4D8C 100%);
+  border: 3px solid #DCEBF9;
+  color: #EAF4FF;
+  font-size: 21px;
+  box-shadow: var(--shadow-md);
+  transition: transform 180ms ease;
+}
+
+.map-pin:hover .map-pin__body {
+  transform: scale(1.08);
+}
+
+/* Статус вынесен в отдельную метку, чтобы эмблема оставалась узнаваемой */
+.map-pin__status {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Критичные объекты пульсируют, чтобы их было видно на общем плане */
+.map-pin--red::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(220, 38, 38, 0.35);
+  animation: map-pin-pulse 1.8s ease-out infinite;
+}
+
+@keyframes map-pin-pulse {
+  0%   { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* ── Выбор расположения на карте ───────────────────────────── */
+
+.location-picker {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.location-picker__map {
+  width: 100%;
+  height: 340px;
+}
+
+.location-picker__hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  background: #F8FAFC;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.maplibregl-popup-content {
+  padding: 0;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.map-popup {
+  padding: 12px 14px;
+  min-width: 210px;
+  font-family: var(--font);
+}
+
+.map-popup__type {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.map-popup__name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 2px;
+  color: var(--text);
+}
+
+.map-popup__address {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.map-popup__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.map-popup__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: var(--status-color);
+}
+
+.map-popup__status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-color);
+}
+
+/* ── Страница входа ────────────────────────────────────────── */
+
+.login-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(1000px 500px at 15% -10%, rgba(10, 76, 138, 0.35), transparent 60%),
+    linear-gradient(160deg, #001B33 0%, #003366 60%, #0A4C8A 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 32px;
+}
+
+.login-card__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.login-card__mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--brand-100);
+  color: var(--brand);
+  font-size: 20px;
+}
+
+.login-card__title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.login-card__subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.login-hint {
+  margin-top: 20px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.login-hint code {
+  color: var(--text);
+  font-size: 12px;
+}
+
+/* ── Мелочи ────────────────────────────────────────────────── */
+
+.ant-card {
+  border-radius: var(--radius);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 6px;
+  border: 2px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
