@@ -1,8 +1,14 @@
 import React from 'react';
 import * as maplibregl from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ObjectType, Status } from '../../types';
 import { objectTypeMeta, STATUS_META } from '../../objectTypes';
+
+// Адрес воркера MapLibre вычисляет в рантайме через import.meta.url, из-за чего
+// сборщик не видит этот файл и не кладёт его в бандл — карта остаётся пустой.
+// Передаём адрес явно, тогда воркер попадает в сборку вместе с зависимостями.
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
 export const MAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
 

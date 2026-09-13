@@ -6,6 +6,9 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['maplibre-gl'],
   },
+  worker: {
+    format: 'es',
+  },
   server: {
     proxy: {
       '/api': 'http://127.0.0.1:5001'
