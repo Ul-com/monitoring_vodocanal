@@ -10,6 +10,54 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!--
+      Диагностика запуска. Обычный (немодульный) скрипт на ES5, поэтому выполняется
+      даже в браузерах, которые не смогли разобрать основной бандл, — иначе такой
+      сбой виден пользователю как пустая белая страница без единой подсказки.
+    -->
+    <script>
+      (function () {
+        var failure = null;
+
+        window.addEventListener('error', function (event) {
+          if (failure) return;
+          failure = event.message || 'Не удалось загрузить ресурс приложения';
+        });
+
+        window.addEventListener('unhandledrejection', function (event) {
+          if (failure) return;
+          failure = 'Необработанная ошибка: ' + (event.reason && event.reason.message ? event.reason.message : event.reason);
+        });
+
+        function report() {
+          var root = document.getElementById('root');
+          if (!root || root.childNodes.length > 0) return;
+
+          var webgl = 'нет';
+          try {
+            var canvas = document.createElement('canvas');
+            if (canvas.getContext('webgl2') || canvas.getContext('webgl')) webgl = 'есть';
+          } catch (e) {
+            webgl = 'нет';
+          }
+
+          root.innerHTML =
+            '<div style="max-width:560px;margin:64px auto;padding:28px;font:14px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#475569;background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(15,23,42,.12)">' +
+            '<div style="font-size:18px;font-weight:600;color:#0f172a;margin-bottom:10px">Приложение не запустилось</div>' +
+            '<p>Скорее всего, браузер устарел и не поддерживает эту версию интерфейса. Откройте пилот в актуальной версии Microsoft Edge, Google Chrome или Safari, либо обновите текущий браузер.</p>' +
+            '<p style="margin-bottom:6px">Передайте эти данные разработчикам:</p>' +
+            '<pre style="margin:0;padding:12px;font-size:12px;white-space:pre-wrap;word-break:break-word;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;color:#b91c1c">' +
+            'Ошибка: ' + (failure || 'приложение не смонтировалось за 10 секунд') + '\n' +
+            'WebGL: ' + webgl + '\n' +
+            'Браузер: ' + navigator.userAgent +
+            '</pre></div>';
+        }
+
+        window.setTimeout(report, 10000);
+      })();
+    </script>
+
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>
