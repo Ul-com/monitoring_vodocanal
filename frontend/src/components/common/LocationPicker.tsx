@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { AimOutlined } from '@ant-design/icons';
 import { ObjectType } from '../../types';
-import { applyRussianLabels, createObjectBadge, MAP_STYLE_URL, MOSCOW_CENTER } from './mapShared';
+import { applyRussianLabels, createObjectBadge, isWebglAvailable, MAP_STYLE_URL, MOSCOW_CENTER } from './mapShared';
 
 type Props = {
   lat?: number;
@@ -21,18 +21,28 @@ const LocationPicker: React.FC<Props> = ({ lat, lng, type, onChange }) => {
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
+  const [mapFailed, setMapFailed] = useState(!isWebglAvailable());
+
   const hasPoint = typeof lat === 'number' && typeof lng === 'number';
 
   useEffect(() => {
-    if (!container.current) return;
+    if (mapFailed || !container.current) return;
 
-    const instance = new maplibregl.Map({
-      container: container.current,
-      style: MAP_STYLE_URL,
-      center: hasPoint ? [lng!, lat!] : MOSCOW_CENTER,
-      zoom: hasPoint ? 14 : 9.5,
-      attributionControl: false,
-    });
+    let instance: maplibregl.Map;
+    try {
+      instance = new maplibregl.Map({
+        container: container.current,
+        style: MAP_STYLE_URL,
+        center: hasPoint ? [lng!, lat!] : MOSCOW_CENTER,
+        zoom: hasPoint ? 14 : 9.5,
+        attributionControl: false,
+      });
+    } catch (error) {
+      // Без карты координаты всё ещё можно ввести в поля формы вручную.
+      console.error('Не удалось инициализировать карту выбора расположения:', error);
+      setMapFailed(true);
+      return;
+    }
     map.current = instance;
 
     instance.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
@@ -45,7 +55,7 @@ const LocationPicker: React.FC<Props> = ({ lat, lng, type, onChange }) => {
       map.current = null;
       marker.current = null;
     };
-  }, []);
+  }, [mapFailed]);
 
   // Маркер следует и за кликом по карте, и за ручным вводом координат в полях формы.
   useEffect(() => {
@@ -89,6 +99,19 @@ const LocationPicker: React.FC<Props> = ({ lat, lng, type, onChange }) => {
     const fresh = createObjectBadge({ type, label: 'Выбранное расположение объекта' });
     element.innerHTML = fresh.innerHTML;
   }, [type]);
+
+  if (mapFailed) {
+    return (
+      <div className="location-picker">
+        <div className="location-picker__map map-fallback">
+          <div className="map-fallback__title">Карта недоступна в этом браузере</div>
+          <div className="map-fallback__text">
+            Для карты нужен WebGL. Координаты объекта можно указать вручную в полях широты и долготы.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="location-picker">

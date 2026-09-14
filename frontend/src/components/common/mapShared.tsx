@@ -10,6 +10,18 @@ import { objectTypeMeta, STATUS_META } from '../../objectTypes';
 // Передаём адрес явно, тогда воркер попадает в сборку вместе с зависимостями.
 maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
+// MapLibre рисует карту только через WebGL и бросает исключение, если контекст
+// недоступен (старые корпоративные ПК, удалённый рабочий стол, отключённое
+// аппаратное ускорение). Проверяем заранее, чтобы показать заглушку.
+export const isWebglAvailable = (): boolean => {
+  try {
+    const canvas = document.createElement('canvas');
+    return Boolean(canvas.getContext('webgl2') || canvas.getContext('webgl'));
+  } catch {
+    return false;
+  }
+};
+
 export const MAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
 
 export const MOSCOW_CENTER: [number, number] = [37.6173, 55.7558];

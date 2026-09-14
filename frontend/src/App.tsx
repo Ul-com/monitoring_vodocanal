@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout, ConfigProvider, theme } from 'antd';
 import ruRU from 'antd/locale/ru_RU';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import Header from './components/common/Header';
 import Sidebar from './components/common/Sidebar';
 import Dashboard from './pages/Dashboard';
@@ -73,32 +74,34 @@ const App: React.FC = () => {
 
   return (
     <ConfigProvider theme={antdTheme} locale={ruRU}>
-      <BrowserRouter>
-        {currentUser ? (
-          <Layout style={{ minHeight: '100vh' }}>
-            <Header />
-            <Layout>
-              <Sidebar />
-              <Content style={{ overflow: 'auto' }}>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/objects" element={<ObjectsPage />} />
-                  <Route path="/alerts" element={<AlertsPage />} />
-                  <Route path="/constructor" element={<ConstructorPage />} />
-                  <Route path="/users" element={<UsersPage />} />
-                  <Route path="/statistics" element={<StatisticsPage />} />
-                  <Route path="*" element={<Navigate to="/" />} />
-                </Routes>
-              </Content>
+      <ErrorBoundary>
+        <BrowserRouter>
+          {currentUser ? (
+            <Layout style={{ minHeight: '100vh' }}>
+              <Header />
+              <Layout>
+                <Sidebar />
+                <Content style={{ overflow: 'auto' }}>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/objects" element={<ObjectsPage />} />
+                    <Route path="/alerts" element={<AlertsPage />} />
+                    <Route path="/constructor" element={<ConstructorPage />} />
+                    <Route path="/users" element={<UsersPage />} />
+                    <Route path="/statistics" element={<StatisticsPage />} />
+                    <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
+                </Content>
+              </Layout>
             </Layout>
-          </Layout>
-        ) : (
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="*" element={<Navigate to="/login" />} />
-          </Routes>
-        )}
-      </BrowserRouter>
+          ) : (
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
+          )}
+        </BrowserRouter>
+      </ErrorBoundary>
     </ConfigProvider>
   );
 };

@@ -1,10 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useStore } from '../../store';
 import { Object as AppObject } from '../../types';
 import { objectTypeMeta, STATUS_META } from '../../objectTypes';
-import { applyRussianLabels, createObjectBadge, MAP_STYLE_URL, MOSCOW_CENTER } from './mapShared';
+import { applyRussianLabels, createObjectBadge, isWebglAvailable, MAP_STYLE_URL, MOSCOW_CENTER } from './mapShared';
 
 const escapeHtml = (value: unknown) =>
   String(value ?? '').replace(/[&<>"']/g, c =>
@@ -47,18 +47,27 @@ const MapLibreMap: React.FC = () => {
   const map = useRef<maplibregl.Map | null>(null);
   const markers = useRef(new Map<string, { marker: maplibregl.Marker; signature: string }>());
   const didFitBounds = useRef(false);
+  const [mapFailed, setMapFailed] = useState(!isWebglAvailable());
   const { objects } = useStore();
 
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (mapFailed || !mapContainer.current) return;
 
-    const instance = new maplibregl.Map({
-      container: mapContainer.current,
-      style: MAP_STYLE_URL,
-      center: MOSCOW_CENTER,
-      zoom: 9.5,
-      attributionControl: false,
-    });
+    let instance: maplibregl.Map;
+    try {
+      instance = new maplibregl.Map({
+        container: mapContainer.current,
+        style: MAP_STYLE_URL,
+        center: MOSCOW_CENTER,
+        zoom: 9.5,
+        attributionControl: false,
+      });
+    } catch (error) {
+      // Падение карты не должно уносить с собой весь интерфейс.
+      console.error('Не удалось инициализировать карту:', error);
+      setMapFailed(true);
+      return;
+    }
     map.current = instance;
 
     instance.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
@@ -69,7 +78,7 @@ const MapLibreMap: React.FC = () => {
       markers.current.clear();
       map.current = null;
     };
-  }, []);
+  }, [mapFailed]);
 
   useEffect(() => {
     const instance = map.current;
@@ -104,6 +113,21 @@ const MapLibreMap: React.FC = () => {
       didFitBounds.current = true;
     }
   }, [objects]);
+
+  if (mapFailed) {
+    return (
+      <div className="map-wrapper">
+        <div className="map-canvas map-fallback">
+          <div className="map-fallback__title">Карта недоступна в этом браузере</div>
+          <div className="map-fallback__text">
+            Для карты нужен WebGL. Включите аппаратное ускорение в настройках браузера или
+            откройте пилот в актуальной версии Chrome, Edge или Safari. Остальные разделы
+            системы работают без ограничений.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="map-wrapper">
